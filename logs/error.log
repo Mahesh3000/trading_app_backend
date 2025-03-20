@@ -1,0 +1,20 @@
+2025-03-19T20:28:15.522Z [ERROR]: Database connection failed: role "sivan" does not exist
+2025-03-19T20:29:29.395Z [ERROR]: Database connection failed: role "sivan" does not exist
+2025-03-19T20:30:45.001Z [ERROR]: Database connection failed: no pg_hba.conf entry for host "144.162.237.15", user "postgres", database "tradeswift", no encryption
+2025-03-19T20:34:05.808Z [ERROR]: Database connection failed: no pg_hba.conf entry for host "144.162.237.15", user "postgres", database "tradeswift", no encryption
+2025-03-19T20:45:58.435Z [ERROR]: Database connection failed: no pg_hba.conf entry for host "144.162.237.15", user "postgres", database "tradeswift", no encryption
+2025-03-19T20:49:54.675Z [ERROR]: Database connection failed: no pg_hba.conf entry for host "144.162.237.15", user "postgres", database "tradeswift", no encryption
+2025-03-19T20:51:45.040Z [ERROR]: Database connection failed: no pg_hba.conf entry for host "144.162.237.15", user "postgres", database "tradeswift", no encryption
+2025-03-19T20:54:45.162Z [ERROR]: Database connection failed: no pg_hba.conf entry for host "144.162.237.15", user "postgres", database "tradeswift", no encryption
+2025-03-19T20:59:07.506Z [ERROR]: Database connection failed: no pg_hba.conf entry for host "144.162.237.15", user "postgres", database "tradeswift", no encryption
+2025-03-19T21:00:20.188Z [ERROR]: Database connection failed: no pg_hba.conf entry for host "144.162.237.15", user "postgres", database "multimarkethub", no encryption
+2025-03-19T21:02:26.972Z [ERROR]: Database connection failed: no pg_hba.conf entry for host "144.162.237.15", user "postgres", database "multimarkethub", no encryption
+2025-03-19T21:36:07.489Z [ERROR]: User registration failed: Email is already registered
+2025-03-19T21:37:50.154Z [ERROR]: User registration failed: Email is already registered
+2025-03-19T21:38:47.246Z [ERROR]: User registration failed: Email is already registered
+2025-03-19T21:38:51.546Z [ERROR]: User registration failed: Email is already registered
+2025-03-19T21:47:43.026Z [ERROR]: User registration failed: Email is already registered
+2025-03-20T02:33:24.094Z [ERROR]: User registration failed: null value in column "username" of relation "users" violates not-null constraint
+2025-03-20T02:38:59.022Z [ERROR]: User registration failed: null value in column "username" of relation "users" violates not-null constraint
+2025-03-20T02:39:24.664Z [ERROR]: User registration failed: null value in column "username" of relation "users" violates not-null constraint
+2025-03-20T15:24:35.967Z [ERROR]: User registration failed: Email is already registered
