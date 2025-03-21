@@ -18,3 +18,14 @@
 2025-03-20T02:38:59.022Z [ERROR]: User registration failed: null value in column "username" of relation "users" violates not-null constraint
 2025-03-20T02:39:24.664Z [ERROR]: User registration failed: null value in column "username" of relation "users" violates not-null constraint
 2025-03-20T15:24:35.967Z [ERROR]: User registration failed: Email is already registered
+2025-03-20T20:21:40.590Z [ERROR]: Error adding to watchlist inconsistent types deduced for parameter $1
+2025-03-20T20:21:47.113Z [ERROR]: Error adding to watchlist inconsistent types deduced for parameter $1
+2025-03-20T20:23:04.781Z [ERROR]: Error adding to watchlist inconsistent types deduced for parameter $1
+2025-03-20T20:50:13.746Z [ERROR]: Error fetching watchlist invalid input syntax for type uuid: "undefined"
+2025-03-20T20:50:21.634Z [ERROR]: Error fetching watchlist invalid input syntax for type uuid: "undefined"
+2025-03-20T20:50:22.153Z [ERROR]: Error fetching watchlist invalid input syntax for type uuid: "undefined"
+2025-03-20T20:51:27.480Z [ERROR]: Error fetching watchlist invalid input syntax for type uuid: "undefined"
+2025-03-20T20:51:27.562Z [ERROR]: Error fetching watchlist invalid input syntax for type uuid: "undefined"
+2025-03-20T20:51:52.661Z [ERROR]: Error fetching watchlist invalid input syntax for type uuid: "undefined"
+2025-03-20T20:51:57.614Z [ERROR]: Error fetching watchlist invalid input syntax for type uuid: "undefined"
+2025-03-20T20:51:58.016Z [ERROR]: Error fetching watchlist invalid input syntax for type uuid: "undefined"
