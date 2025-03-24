@@ -1,21 +1,19 @@
 const { createClient } = require("redis");
 
+// Redis client with explicit host and port (IPv4 address)
 const redisClient = createClient({
-  socket: {
-    host: "127.0.0.1", // Localhost address (IPv4)
-    port: 6379, // Default Redis port
-  },
+  url: "redis://127.0.0.1:6379", // Use IPv4 address explicitly
 });
 
-// redisClient.on("error", (err) => console.error("Redis Client Error", err));
+redisClient.on("error", (err) => console.error("Redis Error:", err));
 
-(async () => {
+async function connectRedis() {
   try {
     await redisClient.connect();
-    console.log("Connected to Redis!");
+    console.log("Connected to Redis");
   } catch (err) {
     console.error("Redis connection error:", err);
   }
-})();
+}
 
-module.exports = redisClient;
+module.exports = { redisClient, connectRedis };

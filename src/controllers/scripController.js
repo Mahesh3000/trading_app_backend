@@ -30,13 +30,13 @@ const searchCoins = async (req, res) => {
   }
 };
 
-const getCoinData = async (req, res) => {
+const getCoinChartData = async (req, res) => {
   const coinId = req.params?.id; // Extract coin ID from the URL params
   const days = req.query.days;
   console.log("coinId", coinId, days);
 
   try {
-    const coinData = await scripService.getCoinDataFromCoinGecko(coinId, days);
+    const coinData = await scripService.getChartCoinData(coinId, days);
     res.status(200).json(coinData); // Send coin data back to the client
   } catch (error) {
     console.error(error);
@@ -46,8 +46,33 @@ const getCoinData = async (req, res) => {
   }
 };
 
+const getCoinData = async (req, res) => {
+  const coinId = req.params.id; // Extract coin ID from the URL params
+
+  try {
+    const coinData = await scripService.getCoinDataFromCoinGecko(coinId);
+    res.status(200).json(coinData); // Send coin data back to the client
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: error.message || "Error fetching coin data" });
+  }
+};
+
+async function searchHandler(req, res) {
+  const { query } = req.query;
+  if (!query)
+    return res.status(400).json({ error: "Query parameter is required" });
+
+  const results = await scripService.searchJSON(query);
+  res.json(results);
+}
+
 module.exports = {
   getScrips,
   searchCoins,
+  getCoinChartData,
   getCoinData,
+  searchHandler,
 };
