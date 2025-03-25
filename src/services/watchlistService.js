@@ -1,11 +1,11 @@
 const pool = require("../config/db"); // Import the pool instance from your existing db.js
 const logger = require("../utils/logger"); // Assuming you have a logger utility
 
-const addToWatchlistService = async (userId, symbol, companyName) => {
+const addToWatchlistService = async (userId, symbol, companyName, coinId) => {
   const checkQuery = `SELECT id FROM watchlist WHERE symbol = $1 AND user_id = $2;`;
   const insertQuery = `
-      INSERT INTO watchlist (symbol, company_name, user_id)
-      VALUES ($1, $2, $3)
+      INSERT INTO watchlist (symbol, company_name, user_id,coin_id)
+      VALUES ($1, $2, $3,$4)
       RETURNING id, symbol, created_at;
     `;
 
@@ -18,7 +18,12 @@ const addToWatchlistService = async (userId, symbol, companyName) => {
     }
 
     // Insert new entry if not found
-    const res = await pool.query(insertQuery, [symbol, companyName, userId]);
+    const res = await pool.query(insertQuery, [
+      symbol,
+      companyName,
+      userId,
+      coinId,
+    ]);
     logger.info("Watchlist item added successfully", { newItem: res.rows[0] });
     return res.rows[0];
   } catch (err) {
@@ -39,7 +44,25 @@ const getWatchlistService = async (userId) => {
   }
 };
 
+const removeFromWatchlist = async (userId, coinId) => {
+  try {
+    // Query to delete the coin from the watchlist
+    const query = "DELETE FROM watchlist WHERE user_id = $1 AND coin_id = $2";
+    const result = await pool.query(query, [userId, coinId]);
+
+    if (result.rowCount === 0) {
+      return { success: false, message: "Coin not found in watchlist" };
+    }
+
+    return { success: true, message: "Successfully removed from watchlist" };
+  } catch (error) {
+    logger.error("Error deleting from watchlist:", error);
+    throw new Error("Server error");
+  }
+};
+
 module.exports = {
   addToWatchlistService,
   getWatchlistService,
+  removeFromWatchlist,
 };

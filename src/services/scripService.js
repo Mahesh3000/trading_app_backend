@@ -1,9 +1,11 @@
 // /services/scripService.js
+const pool = require("../config/db");
 const fs = require("fs");
 const path = require("path");
 const csv = require("csv-parser");
 const axios = require("axios");
 const { redisClient } = require("../config/redis");
+require("dotenv").config(); // Ensure this is at the very top
 
 async function loadJSONToRedis() {
   try {
@@ -111,6 +113,68 @@ const getCoinDataFromCoinGecko = async (coinId) => {
   }
 };
 
+const createTrade = async (
+  coin_id,
+  user_id,
+  trade_type,
+  quantity,
+  price_usd
+) => {
+  try {
+    // Validate required fields
+    if (!coin_id || !user_id || !trade_type || !quantity || !price_usd) {
+      throw new Error("Missing required fields");
+    }
+
+    // Validate numeric values
+    if (isNaN(quantity) || quantity <= 0) {
+      throw new Error("Invalid quantity");
+    }
+    if (isNaN(price_usd) || price_usd <= 0) {
+      throw new Error("Invalid price");
+    }
+
+    // Calculate total value
+    const total_value_usd = quantity * price_usd;
+
+    // Insert trade into database
+    const query = `
+      INSERT INTO trades (coin_id, user_id, trade_type, quantity, price_usd, total_value_usd)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *;
+    `;
+
+    const values = [
+      coin_id,
+      user_id,
+      trade_type,
+      quantity,
+      price_usd,
+      total_value_usd,
+    ];
+    console.log("values", values);
+
+    const result = await pool.query(query, values);
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error creating trade:", error.message);
+    throw new Error("Failed to create trade");
+  }
+};
+
+const getHoldingsService = async (userId) => {
+  const query = `SELECT * FROM trades WHERE user_id = $1;`;
+
+  try {
+    const res = await pool.query(query, [userId]);
+    return res.rows; // Return the watchlist items
+  } catch (err) {
+    logger.error("Error fetching holdings", err);
+    throw new Error("Error fetching holdings");
+  }
+};
+
 module.exports = {
   readCSV,
   searchCoins,
@@ -118,4 +182,6 @@ module.exports = {
   getCoinDataFromCoinGecko,
   loadJSONToRedis,
   searchJSON,
+  createTrade,
+  getHoldingsService,
 };

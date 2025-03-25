@@ -29,3 +29,5 @@
 2025-03-20T20:51:52.661Z [ERROR]: Error fetching watchlist invalid input syntax for type uuid: "undefined"
 2025-03-20T20:51:57.614Z [ERROR]: Error fetching watchlist invalid input syntax for type uuid: "undefined"
 2025-03-20T20:51:58.016Z [ERROR]: Error fetching watchlist invalid input syntax for type uuid: "undefined"
+2025-03-24T20:31:27.894Z [ERROR]: Error fetching watchlist getaddrinfo ENOTFOUND database-1.cgf62a6wahr2.us-east-1.rds.amazonaws.com
+2025-03-24T20:31:53.996Z [ERROR]: Error fetching watchlist getaddrinfo ENOTFOUND database-1.cgf62a6wahr2.us-east-1.rds.amazonaws.com

@@ -69,10 +69,43 @@ async function searchHandler(req, res) {
   res.json(results);
 }
 
+const createTradeController = async (req, res) => {
+  const { coinId, userId, tradeType, quantity, priceUsd } = req.body;
+  console.log("req.body", req.body);
+
+  try {
+    const trade = await scripService.createTrade(
+      coinId,
+      userId,
+      tradeType,
+      quantity,
+      priceUsd
+    );
+    res.status(201).json(trade);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getHoldings = async (req, res) => {
+  const { userId } = req.query;
+
+  console.log("userId", req);
+
+  try {
+    const holdings = await scripService.getHoldingsService(userId);
+    res.json({ holdings });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 module.exports = {
   getScrips,
   searchCoins,
   getCoinChartData,
   getCoinData,
   searchHandler,
+  createTradeController,
+  getHoldings,
 };

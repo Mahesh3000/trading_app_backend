@@ -1,10 +1,11 @@
 const {
   addToWatchlistService,
   getWatchlistService,
+  removeFromWatchlist,
 } = require("../services/watchlistService");
 
 const addToWatchlistController = async (req, res) => {
-  const { userId, symbol, companyName } = req.body;
+  const { userId, symbol, companyName, coinId } = req.body;
 
   if (!userId || !symbol || !companyName) {
     return res.status(400).json({ message: "All fields are required" });
@@ -14,7 +15,8 @@ const addToWatchlistController = async (req, res) => {
     const newWatchlistItem = await addToWatchlistService(
       userId,
       symbol,
-      companyName
+      companyName,
+      coinId
     );
     res.status(201).json({
       message: "Item added to watchlist",
@@ -38,9 +40,30 @@ const getWatchlist = async (req, res) => {
   }
 };
 
-module.exports = { getWatchlist };
+const deleteFromWatchlist = async (req, res) => {
+  const { userId, coinId } = req.body;
+  console.log(req.body);
+
+  if (!userId || !coinId) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    const result = await removeFromWatchlist(userId, coinId);
+
+    if (result.success) {
+      return res.status(200).json({ message: result.message });
+    } else {
+      return res.status(404).json({ message: result.message });
+    }
+  } catch (error) {
+    console.error("Error in deleteFromWatchlist controller:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
 
 module.exports = {
   addToWatchlistController,
   getWatchlist,
+  deleteFromWatchlist,
 };
