@@ -2,6 +2,7 @@ const {
   addToWatchlistService,
   getWatchlistService,
   removeFromWatchlist,
+  getCoinPriceFromCoinGecko,
 } = require("../services/watchlistService");
 
 const addToWatchlistController = async (req, res) => {
@@ -30,11 +31,22 @@ const addToWatchlistController = async (req, res) => {
 const getWatchlist = async (req, res) => {
   const { userId } = req.params;
 
-  console.log("userId", userId);
-
   try {
     const watchlist = await getWatchlistService(userId);
-    res.json({ watchlist });
+
+    const updatedWatchlist = await Promise.all(
+      watchlist.map(async (item) => {
+        const { current_price, change_percent } =
+          await getCoinPriceFromCoinGecko(item.coin_id);
+        return {
+          ...item,
+          current_price,
+          change_percent,
+        };
+      })
+    );
+
+    res.json({ updatedWatchlist });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -42,7 +54,7 @@ const getWatchlist = async (req, res) => {
 
 const deleteFromWatchlist = async (req, res) => {
   const { userId, coinId } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
 
   if (!userId || !coinId) {
     return res.status(400).json({ message: "Missing required fields" });

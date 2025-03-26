@@ -1,5 +1,8 @@
 const pool = require("../config/db"); // Import the pool instance from your existing db.js
 const logger = require("../utils/logger"); // Assuming you have a logger utility
+const axios = require("axios");
+
+const COIN_GECKO_API_KEY = process.env.COIN_GECKO_API_KEY; // You can set it in a .env file
 
 const addToWatchlistService = async (userId, symbol, companyName, coinId) => {
   const checkQuery = `SELECT id FROM watchlist WHERE symbol = $1 AND user_id = $2;`;
@@ -61,8 +64,37 @@ const removeFromWatchlist = async (userId, coinId) => {
   }
 };
 
+const getCoinPriceFromCoinGecko = async (coinId) => {
+  console.log("coinId", coinId);
+
+  try {
+    const response = await axios.get(
+      `https://api.coingecko.com/api/v3/simple/price`,
+      {
+        params: {
+          ids: coinId,
+          vs_currencies: "usd",
+          include_24hr_change: true, // Fetch 24-hour change percentage
+        },
+        headers: {
+          Authorization: `Bearer ${COIN_GECKO_API_KEY}`,
+        },
+      }
+    );
+
+    return {
+      current_price: response.data[coinId]?.usd || null,
+      change_percent: response.data[coinId]?.usd_24h_change || null,
+    };
+  } catch (error) {
+    console.error(`Error fetching price for ${coinId}:`, error);
+    return { current_price: null, change_percent: null }; // Return nulls in case of an error
+  }
+};
+
 module.exports = {
   addToWatchlistService,
   getWatchlistService,
   removeFromWatchlist,
+  getCoinPriceFromCoinGecko,
 };
