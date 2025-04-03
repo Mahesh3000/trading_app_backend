@@ -65,8 +65,6 @@ const removeFromWatchlist = async (userId, coinId) => {
 };
 
 const getCoinPriceFromCoinGecko = async (coinId) => {
-  console.log("coinId", coinId);
-
   try {
     const response = await axios.get(
       `https://api.coingecko.com/api/v3/simple/price`,

@@ -23,7 +23,6 @@ const searchCoins = async (req, res) => {
   try {
     const filteredCoins = await scripService.searchCoins(searchTerm); // Call the service to filter coins
     res.json(filteredCoins); // Return filtered coins
-    console.log("in try");
   } catch (error) {
     console.error("Error searching coins:", error);
     res.status(500).json({ error: "Failed to search coins" });
@@ -33,7 +32,6 @@ const searchCoins = async (req, res) => {
 const getCoinChartData = async (req, res) => {
   const coinId = req.params?.id; // Extract coin ID from the URL params
   const days = req.query.days;
-  console.log("coinId", coinId, days);
 
   try {
     const coinData = await scripService.getChartCoinData(coinId, days);
@@ -71,7 +69,6 @@ async function searchHandler(req, res) {
 
 const createTradeController = async (req, res) => {
   const { coinId, userId, tradeType, quantity, priceUsd } = req.body;
-  console.log("req.body", req.body);
 
   try {
     const trade = await scripService.createTrade(
@@ -90,8 +87,6 @@ const createTradeController = async (req, res) => {
 
 const getHoldings = async (req, res) => {
   const { userId } = req.query;
-
-  console.log("userId", req);
 
   try {
     const holdings = await scripService.getHoldingsService(userId);

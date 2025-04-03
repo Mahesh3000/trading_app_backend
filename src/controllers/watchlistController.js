@@ -54,7 +54,6 @@ const getWatchlist = async (req, res) => {
 
 const deleteFromWatchlist = async (req, res) => {
   const { userId, coinId } = req.body;
-  // console.log(req.body);
 
   if (!userId || !coinId) {
     return res.status(400).json({ message: "Missing required fields" });

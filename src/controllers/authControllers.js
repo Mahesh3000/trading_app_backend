@@ -45,8 +45,6 @@ exports.getUserProfile = async (req, res) => {
     // Extract userId from query params
     const { userId } = req.query;
 
-    console.log("userId", userId);
-
     // Validate userId
     if (!userId) {
       return res.status(400).json({ error: "User ID is required" });
