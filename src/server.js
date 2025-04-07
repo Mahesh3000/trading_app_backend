@@ -12,8 +12,12 @@ const PORT = process.env.PORT || 8000;
 
 // Middlewares
 const helmet = require("helmet");
-app.use(cors());
-
+const corsOptions = {
+  origin: "https://your-amplify-app-url.com", // Replace with your actual frontend URL
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true, // Allow cookies/auth headers
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes
