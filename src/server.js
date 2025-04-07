@@ -12,13 +12,8 @@ const PORT = process.env.PORT || 8000;
 
 // Middlewares
 const helmet = require("helmet");
-app.use(
-  cors({
-    origin: "*", //ch
-    methods: "GET,POST,PUT,DELETE",
-    allowedHeaders: "Content-Type, Authorization",
-  })
-);
+app.use(cors({ origin: "https://main.d1dp07c5ddir1n.amplifyapp.com" }));
+
 app.use(express.json());
 
 // Routes
