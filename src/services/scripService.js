@@ -21,17 +21,51 @@ async function loadJSONToRedis() {
   }
 }
 
+// async function searchJSON(query) {
+//   try {
+//     const jsonData = JSON.parse(await redisClient.get("jsonData"));
+
+//     // Case-insensitive search
+//     return jsonData.filter(
+//       (item) =>
+//         item.name?.toLowerCase().includes(query.toLowerCase()) ||
+//         item.symbol?.toLowerCase().includes(query.toLowerCase())
+//     );
+//   } catch (err) {
+//     console.error("Error searching JSON:", err);
+//     return [];
+//   }
+// }
+
 async function searchJSON(query) {
   try {
-    const jsonData = JSON.parse(await redisClient.get("jsonData"));
-
-    // Case-insensitive search
-    return jsonData.filter(
-      (item) =>
-        item.name?.toLowerCase().includes(query.toLowerCase()) ||
-        item.symbol?.toLowerCase().includes(query.toLowerCase())
+    // Make a GET request to the API with the search query
+    const response = await axios.get(
+      "https://d1cidm3mcg.execute-api.us-east-1.amazonaws.com/coins",
+      {
+        params: {
+          search: query,
+        },
+      }
     );
+
+    const jsonData = response.data;
+    // console.log("jsonData", jsonData);
+
+    if (!jsonData || jsonData.length === 0) {
+      return [];
+    }
+
+    // Return filtered data based on the search query (case-insensitive)
+    // return jsonData.filter(
+    //   (item) =>
+    //     item.name?.toLowerCase().includes(query.toLowerCase()) ||
+    //     item.symbol?.toLowerCase().includes(query.toLowerCase())
+    // );
+
+    return jsonData;
   } catch (err) {
+    // Log any errors that occur during the request
     console.error("Error searching JSON:", err);
     return [];
   }

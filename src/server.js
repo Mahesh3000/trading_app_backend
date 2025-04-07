@@ -21,10 +21,10 @@ app.use("/api/users", authRoutes);
 app.use("/api/watchlist", watchlistRoutes); // Mount watchlist routes
 
 // Connect to Redis
-connectRedis();
+// connectRedis();
 
 // Load JSON into Redis at startup
-loadJSONToRedis();
+// loadJSONToRedis();
 
 // Start server
 app.get("/", (req, res) => {
