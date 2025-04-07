@@ -41,7 +41,7 @@ async function searchJSON(query) {
   try {
     // Make a GET request to the API with the search query
     const response = await axios.get(
-      "https://d1cidm3mcg.execute-api.us-east-1.amazonaws.com/coins",
+      `${process.env.SEARCH_API_GATEWAY}/coins`,
       {
         params: {
           search: query,
