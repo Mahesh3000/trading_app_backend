@@ -22,7 +22,7 @@ exports.registerUser = async (username, email, password) => {
     // Insert the new user into the database
     const result = await pool.query(
       "INSERT INTO users (username, email, password_hash, available_balance) VALUES ($1, $2, $3, $4) RETURNING id, username, email",
-      [username, email, hashedPassword, 10000] // Set initial available_balance to 10000
+      [username, email, hashedPassword, 100000] // Set initial available_balance to 100000
     );
 
     const user = result.rows[0];

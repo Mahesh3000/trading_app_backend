@@ -5,6 +5,7 @@ const path = require("path");
 const csv = require("csv-parser");
 const axios = require("axios");
 const { redisClient } = require("../config/redis");
+const { getUserProfile } = require("./userService");
 require("dotenv").config(); // Ensure this is at the very top
 
 async function loadJSONToRedis() {
@@ -147,18 +148,68 @@ const getCoinDataFromCoinGecko = async (coinId) => {
   }
 };
 
+// const createTrade = async (
+//   coin_id,
+//   user_id,
+//   trade_type,
+//   quantity,
+//   price_usd
+// ) => {
+//   try {
+//     // Validate required fields
+//     if (!coin_id || !user_id || !trade_type || !quantity || !price_usd) {
+//       throw new Error("Missing required fields");
+//     }
+
+//     // Validate numeric values
+//     if (isNaN(quantity) || quantity <= 0) {
+//       throw new Error("Invalid quantity");
+//     }
+//     if (isNaN(price_usd) || price_usd <= 0) {
+//       throw new Error("Invalid price");
+//     }
+
+//     // Calculate total value
+//     const total_value_usd = quantity * price_usd;
+
+//     // Insert trade into database
+//     const query = `
+//       INSERT INTO trades (coin_id, user_id, trade_type, quantity, price_usd, total_value_usd)
+//       VALUES ($1, $2, $3, $4, $5, $6)
+//       RETURNING *;
+//     `;
+
+//     const values = [
+//       coin_id,
+//       user_id,
+//       trade_type,
+//       quantity,
+//       price_usd,
+//       total_value_usd,
+//     ];
+//     console.log("values", values);
+
+//     const result = await pool.query(query, values);
+
+//     return result.rows[0];
+//   } catch (error) {
+//     console.error("Error creating trade:", error.message);
+//     throw new Error("Failed to create trade");
+//   }
+// };
+
 const createTrade = async (
   coin_id,
   user_id,
   trade_type,
   quantity,
-  price_usd
+  price_usd,
+  coin_symbol
 ) => {
   try {
     // Validate required fields
-    if (!coin_id || !user_id || !trade_type || !quantity || !price_usd) {
-      throw new Error("Missing required fields");
-    }
+
+    const profile = await getUserProfile(user_id);
 
     // Validate numeric values
     if (isNaN(quantity) || quantity <= 0) {
@@ -168,13 +219,35 @@ const createTrade = async (
       throw new Error("Invalid price");
     }
 
+    const availableBalance = profile.available_balance; // Get the available balance
+
     // Calculate total value
     const total_value_usd = quantity * price_usd;
 
+    if (total_value_usd > availableBalance) {
+      throw new Error(
+        `Insufficient funds. Available balance: ${availableBalance}`
+      );
+    }
+
+    if (trade_type === "buy") {
+      const updatedBalance = availableBalance - total_value_usd;
+
+      // Update the user's profile with the new balance
+      await updateUserBalance(user_id, updatedBalance);
+    }
+
+    // Add the trade amount to available balance for "sell" trade
+    if (trade_type === "sell") {
+      const updatedBalance = availableBalance + total_value_usd;
+
+      // Update the user's profile with the new balance
+      await updateUserBalance(user_id, updatedBalance);
+    }
     // Insert trade into database
     const query = `
-      INSERT INTO trades (coin_id, user_id, trade_type, quantity, price_usd, total_value_usd)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO trades (coin_id, user_id, trade_type, quantity, price_usd, total_value_usd,coin_symbol)
+      VALUES ($1, $2, $3, $4, $5, $6,$7)
       RETURNING *;
     `;
 
@@ -185,16 +258,29 @@ const createTrade = async (
       quantity,
       price_usd,
       total_value_usd,
+      coin_symbol,
     ];
-    console.log("values", values);
 
     const result = await pool.query(query, values);
 
     return result.rows[0];
   } catch (error) {
     console.error("Error creating trade:", error.message);
-    throw new Error("Failed to create trade");
+    throw error;
   }
+};
+
+const updateUserBalance = async (user_id, updatedBalance) => {
+  const query = `
+    UPDATE users
+    SET available_balance = $1
+    WHERE id = $2
+    RETURNING *;
+  `;
+  const values = [updatedBalance, user_id];
+
+  const result = await pool.query(query, values);
+  return result.rows[0]; // Return the updated profile
 };
 
 const getHoldingsService = async (userId) => {

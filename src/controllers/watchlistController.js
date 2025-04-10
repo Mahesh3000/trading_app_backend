@@ -37,7 +37,7 @@ const getWatchlist = async (req, res) => {
     const updatedWatchlist = await Promise.all(
       watchlist.map(async (item) => {
         const { current_price, change_percent } =
-          await getCoinPriceFromCoinGecko(item.coin_id);
+          await getCoinPriceFromCoinGecko(item.symbol.toUpperCase());
         return {
           ...item,
           current_price,

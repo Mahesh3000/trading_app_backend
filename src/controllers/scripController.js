@@ -68,7 +68,8 @@ async function searchHandler(req, res) {
 }
 
 const createTradeController = async (req, res) => {
-  const { coinId, userId, tradeType, quantity, priceUsd } = req.body;
+  const { coinId, userId, tradeType, quantity, priceUsd, coinSymbol } =
+    req.body;
 
   try {
     const trade = await scripService.createTrade(
@@ -76,12 +77,22 @@ const createTradeController = async (req, res) => {
       userId,
       tradeType,
       quantity,
-      priceUsd
+      priceUsd,
+      coinSymbol
     );
     res.status(201).json(trade);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: error.message });
+    if (error.message.includes("Insufficient funds")) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+
+    res.status(500).json({
+      error: "Failed to create trade",
+      details: error.message,
+    });
   }
 };
 
@@ -90,7 +101,20 @@ const getHoldings = async (req, res) => {
 
   try {
     const holdings = await scripService.getHoldingsService(userId);
-    res.json({ holdings });
+
+    const updatedHoldings = await Promise.all(
+      holdings.map(async (item) => {
+        const { current_price, change_percent } =
+          await getCoinPriceFromCoinGecko(item.coin_symbol.toUpperCase());
+        return {
+          ...item,
+          current_price,
+          change_percent,
+        };
+      })
+    );
+
+    res.json({ updatedHoldings });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -104,3 +128,32 @@ module.exports = {
   createTradeController,
   getHoldings,
 };
+
+// const createTradeController = async (req, res) => {
+//   const { coinId, userId, tradeType, quantity, priceUsd } = req.body;
+
+//   try {
+//     const trade = await scripService.createTrade(
+//       coinId,
+//       userId,
+//       tradeType,
+//       quantity,
+//       priceUsd
+//     );
+//     res.status(201).json(trade);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
+// const getHoldings = async (req, res) => {
+//   const { userId } = req.query;
+
+//   try {
+//     const holdings = await scripService.getHoldingsService(userId);
+//     res.json({ holdings });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// };
