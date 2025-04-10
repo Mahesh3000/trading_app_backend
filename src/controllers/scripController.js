@@ -1,6 +1,6 @@
 // /controllers/scripController.js
 const scripService = require("../services/scripService");
-// const coinService = require("../services/scripService"); // Import the coinService
+const { getCoinPriceFromCoinGecko } = require("../services/watchlistService");
 
 // Controller function to get scrips data
 const getScrips = async (req, res) => {
