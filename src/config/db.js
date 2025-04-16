@@ -13,13 +13,21 @@ const pool = new Pool({
   ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : false,
 });
 
-pool.on("connect", () => {
-  logger.info("Connected to the database successfully");
-});
+(async () => {
+  try {
+    const client = await pool.connect();
+    logger.info("Connected to the database successfully");
+    client.release(); // release back to pool
+  } catch (err) {
+    logger.error("Failed to connect to the database:", err);
+    process.exit(1);
+  }
+})();
 
+// Handle pool-level errors (rare, but good to have)
 pool.on("error", (err) => {
-  logger.error("Database connection error", err);
-  process.exit(-1); // Exit the process if the connection fails
+  logger.error("Unexpected database error", err);
+  process.exit(-1); // crash app on unrecoverable DB error
 });
 
 module.exports = pool;

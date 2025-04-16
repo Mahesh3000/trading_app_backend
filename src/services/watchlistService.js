@@ -1,5 +1,5 @@
-const pool = require("../config/db"); // Import the pool instance from your existing db.js
-const logger = require("../utils/logger"); // Assuming you have a logger utility
+const pool = require("../config/db");
+const logger = require("../utils/logger");
 const axios = require("axios");
 
 const COIN_GECKO_API_KEY = process.env.COIN_GECKO_API_KEY; // You can set it in a .env file
