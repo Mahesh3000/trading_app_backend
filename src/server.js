@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 8000;
 // Middlewares
 const helmet = require("helmet");
 const corsOptions = {
-  origin: "https://maheshsivangi.tech:5173", // Replace with your actual frontend URL
+  origin: "https://maheshsivangi.tech", // Replace with your actual frontend URL
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // Allow cookies/auth headers
 };
