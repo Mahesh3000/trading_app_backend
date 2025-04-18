@@ -12,11 +12,25 @@ const PORT = process.env.PORT || 8000;
 
 // Middlewares
 const helmet = require("helmet");
+
+const allowedOrigins = [
+  "https://maheshsivangi.tech",
+  "https://cryptotrack.maheshsivangi.tech",
+  "http://localhost:5173",
+];
+
 const corsOptions = {
-  origin: "https://maheshsivangi.tech", // Replace with your actual frontend URL
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true, // Allow cookies/auth headers
+  credentials: true,
 };
+
 app.use(cors(corsOptions));
 app.use(express.json());
 
